@@ -6,6 +6,7 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("@build_bazel_rules_nodejs//:providers.bzl", "JSEcmaScriptModuleInfo", "JSModuleInfo", "NpmPackageInfo", "node_modules_aspect", "run_node")
 load("@build_bazel_rules_nodejs//internal/linker:link_node_modules.bzl", "MODULE_MAPPINGS_ASPECT_RESULTS_NAME", "module_mappings_aspect")
 load(":helpers.bzl", "filter_files", "generate_path_mapping", "resolve_entry_point", "write_jsconfig_file")
+load(":toolchain.bzl", "TOOLCHAIN")
 
 def _esbuild_impl(ctx):
     # For each dep, JSEcmaScriptModuleInfo is used if found, then JSModuleInfo and finally
@@ -119,7 +120,7 @@ def _esbuild_impl(ctx):
         execution_requirements = {"no-remote-exec": "1"}
 
     launcher_args = ctx.actions.args()
-    launcher_args.add("--esbuild=%s" % ctx.executable.tool.path)
+    launcher_args.add("--esbuild=%s" % ctx.toolchains[TOOLCHAIN].binary.path)
 
     run_node(
         ctx = ctx,
@@ -132,7 +133,7 @@ def _esbuild_impl(ctx):
         env = env,
         executable = "launcher",
         link_workspace_root = ctx.attr.link_workspace_root,
-        tools = [ctx.executable.tool],
+        tools = [ctx.toolchains[TOOLCHAIN].binary],
     )
 
     return [
@@ -275,19 +276,15 @@ edge16, node10, default esnext)
 See https://esbuild.github.io/api/#target for more details
             """,
         ),
-        "tool": attr.label(
-            allow_single_file = True,
-            mandatory = True,
-            executable = True,
-            cfg = "exec",
-            doc = "An executable for the esbuild binary",
-        ),
     },
     implementation = _esbuild_impl,
     doc = """Runs the esbuild bundler under Bazel
 
 For further information about esbuild, see https://esbuild.github.io/
     """,
+    toolchains = [
+        TOOLCHAIN,
+    ],
 )
 
 def esbuild_macro(name, output_dir = False, **kwargs):
@@ -305,7 +302,7 @@ def esbuild_macro(name, output_dir = False, **kwargs):
     _launcher = "_%s_esbuild_launcher" % name
     nodejs_binary(
         name = _launcher,
-        entry_point = Label("@build_bazel_rules_nodejs//packages/esbuild:launcher.js"),
+        entry_point = Label("@esbuild_toolchain//:launcher.js"),
     )
 
     if output_dir == True:

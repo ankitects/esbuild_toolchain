@@ -5,6 +5,7 @@ Helper macro for fetching esbuild versions for internal tests and examples in ru
 """
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load(":toolchain.bzl", "register_default_toolchains")
 
 _VERSION = "0.11.6"
 
@@ -40,3 +41,5 @@ def esbuild_dependencies():
         build_file_content = """exports_files(["bin/esbuild"])""",
         sha256 = "34612e3e15e6c31d9d742d3fd677bd5208b7e5c0ee9c93809999138c6c5c1039",
     )
+
+    register_default_toolchains()

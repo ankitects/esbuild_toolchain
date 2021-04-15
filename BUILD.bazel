@@ -1,0 +1,10 @@
+load(":toolchain.bzl", "define_default_toolchains")
+
+toolchain_type(
+    name = "toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
+define_default_toolchains()
+
+exports_files(["launcher.js"])
