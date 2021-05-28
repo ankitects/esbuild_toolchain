@@ -41,5 +41,14 @@ def esbuild_dependencies():
         build_file_content = """exports_files(["bin/esbuild"])""",
         sha256 = "34612e3e15e6c31d9d742d3fd677bd5208b7e5c0ee9c93809999138c6c5c1039",
     )
+    http_archive(
+        name = "esbuild_linux_arm64",
+        urls = [
+            "https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-arm64-%s.tgz" % version,
+        ],
+        strip_prefix = "package",
+        build_file_content = """exports_files(["bin/esbuild"])""",
+        sha256 = "60af935fc3c29d6defd6e3822d9a00220dc631f4aba5cf5af3ce12d2d0d268e6",
+    )
 
     register_default_toolchains()
