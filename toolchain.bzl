@@ -42,7 +42,7 @@ def define_default_toolchains():
                 name = "esbuild_{}_toolchain".format(platform),
                 exec_compatible_with = [
                     "@platforms//os:linux",
-                    "@platforms//cpu:arm64",
+                    "@platforms//cpu:aarch64",
                 ],
                 toolchain = ":esbuild_" + platform,
                 toolchain_type = ":toolchain_type",
