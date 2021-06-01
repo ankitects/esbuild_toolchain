@@ -44,7 +44,7 @@ def esbuild_dependencies():
     http_archive(
         name = "esbuild_linux_arm64",
         urls = [
-            "https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-arm64-%s.tgz" % version,
+            "https://registry.npmjs.org/esbuild-linux-arm64/-/esbuild-linux-arm64-%s.tgz" % version,
         ],
         strip_prefix = "package",
         build_file_content = """exports_files(["bin/esbuild"])""",
